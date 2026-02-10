@@ -1,0 +1,37 @@
+[project]
+name = "algo-trading-core"
+version = "0.1.0"
+description = "Algo trading API"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "B", "C4", "UP", "W"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+pythonpath = ["."]
+addopts = "-v --tb=short"
+markers = [
+    "integration: tests that need DB/Redis (deselect with -m 'not integration')",
+]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/main.py", "*/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = ["def __repr__", "raise NotImplementedError", "if TYPE_CHECKING:"]
+fail_under = 25
