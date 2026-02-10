@@ -44,6 +44,7 @@ def create_app() -> FastAPI:
     ]
     _origins = [o for o in _origins if o]
     _origins = list(dict.fromkeys(_origins))
+    app.state.cors_allow_origins = _origins  # so exception handlers can add CORS to 4xx/5xx
     app.add_middleware(
         CORSMiddleware,
         allow_origins=_origins,
