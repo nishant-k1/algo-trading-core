@@ -38,11 +38,14 @@ def create_app() -> FastAPI:
         "http://127.0.0.1:5173",
         "http://localhost:4173",
         "http://127.0.0.1:4173",  # Vite preview (E2E)
+        "https://algo-trading-web.vercel.app",  # Production (Vercel)
         settings.frontend_url,
     ]
+    # Dedupe and filter empty (e.g. frontend_url not set)
+    _origins = list(dict.fromkeys(o.rstrip("/") for o in _origins if o))
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[o for o in _origins if o],
+        allow_origins=_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
