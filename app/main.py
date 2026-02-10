@@ -32,17 +32,18 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # CORS: allow frontend so browser doesn't block; explicit origins required when using credentials
+    # CORS: allow frontend so browser doesn't block (login, profile, dashboard, etc.)
     _origins = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:4173",
         "http://127.0.0.1:4173",  # Vite preview (E2E)
         "https://algo-trading-web.vercel.app",  # Production (Vercel)
-        settings.frontend_url,
+        "https://algo-trading-web.vercel.app/",  # with trailing slash (browser may send either)
+        (settings.frontend_url or "").rstrip("/"),
     ]
-    # Dedupe and filter empty (e.g. frontend_url not set)
-    _origins = list(dict.fromkeys(o.rstrip("/") for o in _origins if o))
+    _origins = [o for o in _origins if o]
+    _origins = list(dict.fromkeys(_origins))
     app.add_middleware(
         CORSMiddleware,
         allow_origins=_origins,
