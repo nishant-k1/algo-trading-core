@@ -1,0 +1,35 @@
+# Git and env
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+
+# Python
+.venv
+venv
+__pycache__
+*.py[cod]
+*.egg-info
+.eggs
+.mypy_cache
+.ruff_cache
+.pytest_cache
+htmlcov
+.coverage
+*.so
+
+# Tests (not needed in production image)
+tests/
+*.test.py
+*_test.py
+
+# Docs and dev
+*.md
+!README.md
+.idea
+.vscode
+.DS_Store
+
+# Scripts (optional: remove if you run migrations in image)
+# scripts/

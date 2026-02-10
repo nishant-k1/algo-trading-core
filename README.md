@@ -15,6 +15,15 @@ git push -u origin main
 
 ## Deploy on Render
 
+### Option A: Docker (recommended)
+
+- **Environment:** Docker
+- **Dockerfile path:** `./Dockerfile` (root of repo)
+- **No build/start commands needed** — Render uses the Dockerfile. The app listens on `PORT` (set by Render).
+- **Environment variables:** Set in Render dashboard: `DATABASE_URL`, `REDIS_URL` (if used), `SECRET_KEY`, `FRONTEND_URL` (your Vercel app URL for CORS).
+
+### Option B: Native (Python)
+
 - **Build command:** `pip install -r requirements.txt`
 - **Start command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-- **Environment variables:** Set `DATABASE_URL`, `REDIS_URL` (if used), `SECRET_KEY`, and `FRONTEND_URL` (your Vercel app URL for CORS).
+- **Environment variables:** Same as above.
