@@ -21,3 +21,10 @@ class RegisterRequest(BaseModel):
 
     email: str
     password: str
+
+
+class ChangePasswordRequest(BaseModel):
+    """Change password for current user."""
+
+    current_password: str
+    new_password: str

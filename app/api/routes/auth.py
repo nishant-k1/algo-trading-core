@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from app.core.security import create_access_token, get_current_user_id
 from app.db.session import get_db
 from app.db.models.user import User
-from app.schemas.auth import TokenResponse, RegisterRequest
+from app.schemas.auth import ChangePasswordRequest, RegisterRequest, TokenResponse
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -71,3 +71,29 @@ async def register(body: RegisterRequest, db: Session = Depends(get_db)) -> Toke
 async def me(user_id: int = Depends(get_current_user_id)) -> dict:
     """Return current user id (validates token/API key)."""
     return {"user_id": user_id}
+
+
+@router.post("/change-password")
+async def change_password(
+    body: ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    user_id: int = Depends(get_current_user_id),
+) -> dict:
+    """Change password for the current user."""
+
+    user = db.execute(select(User).where(User.id == user_id)).scalar_one_or_none()
+    if user is None:
+        # Should not happen if token is valid, but guard anyway
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    if not _verify_password(body.current_password, user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect",
+        )
+
+    user.hashed_password = _hash_password(body.new_password)
+    db.add(user)
+    db.commit()
+
+    return {"detail": "Password updated"}
